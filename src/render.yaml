@@ -1,0 +1,19 @@
+# Render lê este arquivo automaticamente (Blueprint) se estiver na raiz do repositório.
+# Com ele, o serviço já sobe configurado sem precisar preencher tudo manualmente no dashboard.
+
+services:
+  - type: web
+    name: tiktok-rss-api
+    runtime: docker
+    plan: starter          # troque para "free" se quiser testar sem custo (dorme após inatividade)
+    region: oregon          # escolha a região mais próxima do seu público
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: CACHE_TTL_SECONDS
+        value: 900
+      - key: RATE_LIMIT_PER_MINUTE
+        value: 20
+    autoDeploy: true        # faz redeploy automático a cada push na branch principal
