@@ -17,6 +17,19 @@ const PORT = process.env.PORT || 3000;
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
 
+// CORS liberado para as rotas de RSS: é um feed público e somente leitura,
+// pensado para ser consumido por scripts/navegadores de qualquer origem
+// (inclusive testes locais abertos via file://, cuja origem é "null").
+app.use((req, res, next) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 // Protege o TikTok (e o seu próprio servidor) de excesso de requisições.
 const limiter = rateLimit({
   windowMs: 60 * 1000,
